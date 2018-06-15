@@ -1,6 +1,6 @@
 NAME = 'Teletica'
-ICON = 'icon-default.jpg'
-ART = 'art-default.jpg'
+ICON = 'icon-default2.jpg'
+ART = 'art-default2.jpg'
 FF = 1 # Family Filter, we default to 1 (meaning it is enabled)
 
 ####################################################################################################
@@ -24,18 +24,18 @@ def Start():
 	HTTP.CacheTime = 1800
 
 ####################################################################################################
-@handler('/video/dailymotion', NAME, art=ART, thumb=ICON)
+@handler('/video/teletica', NAME, art=ART, thumb=ICON)
 def MainMenu():
 
 	oc = ObjectContainer()
 
 	# main video channel listings
-	oc.add(DirectoryObject(key=Callback(GetVideoList, path="videos", filters="featured", sort="recent", title2="Featured Videos"), title="Featured Videos"))
+	oc.add(DirectoryObject(key=Callback(GetVideoList, path="videos", filters="featured", sort="recent", title2="Ver Teletica"), title="Ver Teletica"))
 
 	return oc
 
 ####################################################################################################
-@route("/video/dailymotion/getvideolist", limit=int, page=int)
+@route("/video/teletica/getvideolist", limit=int, page=int)
 def GetVideoList(path="videos", filters=None, sort="recent", limit=25, page=1, title2="Videos", search=None):
 
 	oc = ObjectContainer(title2=title2)
@@ -103,13 +103,13 @@ def GetVideoList(path="videos", filters=None, sort="recent", limit=25, page=1, t
 	return oc
 
 ####################################################################################################
-@route("/video/dailymotion/getchannels")
+@route("/video/teletica/getchannels")
 def GetChannels():
 
 	oc = ObjectContainer()
 
 	# will leave sort=alpha in here in case it works in the future, but right now it seems like a bug in their api, it still returns popular and not alpha no matter what you choose
-	data = JSON.ObjectFromURL("https://api.dailymotion.com/channels?sort=alpha&family_filter=%i" % FF)
+	data = JSON.ObjectFromURL("https://api.teletica.com/channels?sort=alpha&family_filter=%i" % FF)
 	for channel in data['list']:
 		oc.add(DirectoryObject(key=Callback(ShowChannelChoices, channel=channel['id']), title=channel['name'], summary=channel['description']))
 
@@ -119,7 +119,7 @@ def GetChannels():
 	return oc
 
 ####################################################################################################
-@route("/video/dailymotion/showchannelchoices")
+@route("/video/teletica/showchannelchoices")
 def ShowChannelChoices(channel):
 
 	oc = ObjectContainer()
@@ -189,13 +189,13 @@ def ShowChannelChoices(channel):
 
 ####################################################################################################
 # We add a default query string purely so that it is easier to be tested by the automated channel tester
-@route("/video/dailymotion/search")
+@route("/video/teletica/search")
 def Search(query = "pug", stype="relevance"):
 
 	return GetVideoList(sort=stype, search=String.Quote(query, usePlus=True))
 
 ####################################################################################################
-@route("/video/dailymotion/searchoptions")
+@route("/video/teletica/searchoptions")
 def SearchOptions():
 
 	# search videos
