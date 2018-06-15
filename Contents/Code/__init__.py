@@ -51,50 +51,50 @@ def GetVideoList(path="videos", filters=None, sort="recent", limit=25, page=1, t
 	#	full_url = "%s&search=%s" % (full_url, search) # only add search if applicable, API doesn't like a NULL search request
 
 	full_url = "https://api.dailymotion.com/video/x29e3wg?fields=title,description,thumbnail_large_url,rating,url,duration,created_time,views_total"
-	data = JSON.ObjectFromURL(full_url)
+	video = JSON.ObjectFromURL(full_url)
 
-	for video in data['list']:
-		title = video['title']
-		url = video['url']
-		duration = video['duration']*1000 # worst case duration is 0 so we get 0
 
-		try:
-			views = "\n\nViews: %i" % video["views_total"]
-		except:
-			views = ""
+	title = video['title']
+	url = video['url']
+	duration = video['duration']*1000 # worst case duration is 0 so we get 0
 
-		try:
-			summary = String.StripTags(video['description'].replace("<br />", "\n")) + views
-			summary = summary.strip()
-		except:
-			summary = None
+	try:
+		views = "\n\nViews: %i" % video["views_total"]
+	except:
+		views = ""
 
-		try:
-			thumb_url = video['thumbnail_large_url']
-		except:
-			thumb_url = ""
+	try:
+		summary = String.StripTags(video['description'].replace("<br />", "\n")) + views
+		summary = summary.strip()
+	except:
+		summary = None
 
-		try:
-			rating = float(video['rating']*2)
-		except:
-			rating = None
+	try:
+		thumb_url = video['thumbnail_large_url']
+	except:
+		thumb_url = ""
 
-		try:
-			originally_available_at = Datetime.FromTimestamp(video['created_time'])
-		except:
-			originally_available_at = None
+	try:
+		rating = float(video['rating']*2)
+	except:
+		rating = None
 
-		oc.add(
-			VideoClipObject(
-				url = url,
-				title = title,
-				summary = summary,
-				duration = duration,
-				rating = rating,
-				originally_available_at = originally_available_at,
-				thumb = Resource.ContentsOfURLWithFallback(url=thumb_url, fallback=ICON)
-			)
+	try:
+		originally_available_at = Datetime.FromTimestamp(video['created_time'])
+	except:
+		originally_available_at = None
+
+	oc.add(
+		VideoClipObject(
+			url = url,
+			title = title,
+			summary = summary,
+			duration = duration,
+			rating = rating,
+			originally_available_at = originally_available_at,
+			thumb = Resource.ContentsOfURLWithFallback(url=thumb_url, fallback=ICON)
 		)
+	)
 
 	# pagination
 	if data['has_more']:
